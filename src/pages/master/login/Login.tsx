@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
@@ -14,6 +14,10 @@ import { Icons } from '../../../icons/Icons';
 import { useAppDispatch } from '../../../hooks/reduxHooks';
 import { setCredentials } from '../../../redux/authSlice';
 import { loginUserAPI } from './LoginAPI';
+import bgImage1 from '../../../assets/suryoday_bg_1.png';
+import bgImage2 from '../../../assets/suryoday_bg_2.png';
+
+const bgImages = [bgImage1, bgImage2];
 
 interface LoginFormInputs {
   identifier: string;
@@ -22,6 +26,7 @@ interface LoginFormInputs {
 
 export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: AlertColor }>({
     open: false,
     message: '',
@@ -30,6 +35,14 @@ export const Login: React.FC = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bgImages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const {
     control,
@@ -96,105 +109,56 @@ export const Login: React.FC = () => {
     <MuiBox
       sx={{
         minHeight: '100vh',
+        height: { md: '100vh' },
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         bgcolor: '#f8fafc',
+        overflow: { md: 'hidden' },
       }}
     >
-      {/* Left Branding Showcase Hero */}
+      {/* Left Image Section (65%) */}
       <MuiBox
         sx={{
-          flex: 1.1,
-          display: { xs: 'none', md: 'flex' },
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          p: { md: 6, lg: 8 },
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%)',
-          color: '#ffffff',
+          flex: { xs: 'none', md: '0 0 65%' },
+          width: { xs: '100%', md: '65%' },
+          display: { xs: 'none', md: 'block' },
           position: 'relative',
           overflow: 'hidden',
+          height: { xs: 'auto', md: '100vh' },
         }}
       >
-        <MuiBox
-          sx={{
-            position: 'absolute',
-            top: -100,
-            right: -100,
-            width: 350,
-            height: 350,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(2, 132, 199, 0) 70%)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <MuiBox sx={{ zIndex: 1 }}>
-          <MuiStack direction="row" spacing={1.5} alignItems="center">
-            <MuiBox
-              sx={{
-                width: 44,
-                height: 44,
-                borderRadius: '10px',
-                bgcolor: 'secondary.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#0f172a',
-                fontWeight: 800,
-                fontSize: '1.4rem',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
-              }}
-            >
-              S
-            </MuiBox>
-            <div>
-              <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: '-0.5px', color: '#ffffff' }}>
-                SURYODAY INDUSTRIES
-              </Typography>
-              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', letterSpacing: '0.05em' }}>
-                ENTERPRISE RESOURCE PLANNING
-              </Typography>
-            </div>
-          </MuiStack>
-        </MuiBox>
-
-        <MuiBox sx={{ zIndex: 1, my: 6 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, lineHeight: 1.2, mb: 2, letterSpacing: '-1px' }}>
-            Empowering Modern <br />
-            <span style={{ color: '#38bdf8' }}>Industrial Operations</span>
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#cbd5e1', maxWidth: 480, fontSize: '1.05rem', lineHeight: 1.6 }}>
-            Unified cloud ERP managing manufacturing processes, inventory lifecycle, automated batching, and financial operations.
-          </Typography>
-
-          <MuiStack direction="row" spacing={3} sx={{ mt: 5 }}>
-            <MuiBox sx={{ bgcolor: 'rgba(255, 255, 255, 0.08)', p: 2, borderRadius: '10px', backdropFilter: 'blur(4px)', minWidth: 140 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#fde047' }}>100%</Typography>
-              <Typography variant="caption" sx={{ color: '#94a3b8' }}>Real-time Traceability</Typography>
-            </MuiBox>
-            <MuiBox sx={{ bgcolor: 'rgba(255, 255, 255, 0.08)', p: 2, borderRadius: '10px', backdropFilter: 'blur(4px)', minWidth: 140 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#38bdf8' }}>High Speed</Typography>
-              <Typography variant="caption" sx={{ color: '#94a3b8' }}>Automated Workflows</Typography>
-            </MuiBox>
-          </MuiStack>
-        </MuiBox>
-
-        <MuiBox sx={{ zIndex: 1 }}>
-          <Typography variant="caption" sx={{ color: '#64748b' }}>
-            &copy; {new Date().getFullYear()} Suryoday Industries Ltd. All rights reserved.
-          </Typography>
-        </MuiBox>
+        {bgImages.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Suryoday background ${index + 1}`}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              opacity: currentImageIndex === index ? 1 : 0,
+              transition: 'opacity 1s ease-in-out',
+            }}
+          />
+        ))}
       </MuiBox>
 
-      {/* Right Login Form Container */}
+      {/* Right Login Form Container (35%) */}
       <MuiBox
         sx={{
-          flex: 1,
+          flex: { xs: 1, md: '0 0 35%' },
+          width: { xs: '100%', md: '35%' },
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          p: { xs: 3, sm: 6, md: 8 },
+          p: { xs: 3, sm: 6, md: 6, lg: 8 },
+          height: { md: '100vh' },
+          overflowY: 'auto',
         }}
       >
         <MuiBox sx={{ width: '100%', maxWidth: 440 }}>
