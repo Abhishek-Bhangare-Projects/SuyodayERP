@@ -38,6 +38,17 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import MoveToInboxOutlinedIcon from '@mui/icons-material/MoveToInboxOutlined';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
+import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export const Icons = {
   add: AddIcon,
@@ -82,6 +93,19 @@ export const Icons = {
   searchIcon: SearchIcon,
   filterIcon: FilterListIcon,
   tuneIcon: TuneOutlinedIcon,
+  inwardIcon: MoveToInboxOutlinedIcon,
+  outwardIcon: PointOfSaleOutlinedIcon,
+  reportsIcon: AssessmentOutlinedIcon,
+  accountingIcon: AccountBalanceWalletOutlinedIcon,
+  qrCodeIcon: QrCode2OutlinedIcon,
+  purchaseIcon: ShoppingBagOutlinedIcon,
+  masterIcon: CategoryOutlinedIcon,
+  assignmentIcon: AssignmentTurnedInOutlinedIcon,
+  docIcon: DescriptionOutlinedIcon,
+  storeIcon: StorefrontOutlinedIcon,
+  bankIcon: AccountBalanceOutlinedIcon,
+  logoutIcon: ExitToAppIcon,
 };
 
 export type IconKey = keyof typeof Icons;
+
