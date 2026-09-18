@@ -55,6 +55,20 @@ export const erpNavigation: MenuItem[] = [
     resource: 'dashboard',
   },
   {
+    label: 'Inward',
+    path: '/inward',
+    iconKey: 'inwardIcon',
+    resource: 'inward',
+  },
+
+  {
+    label: 'OutWard',
+    path: '/outward',
+    iconKey: 'outwardIcon',
+    resource: 'outward',
+  },
+
+  {
     label: 'Master',
     iconKey: 'masterIcon',
     resource: 'master',
@@ -73,12 +87,7 @@ export const erpNavigation: MenuItem[] = [
       { label: 'Add Bom', path: '/master/add-bom', resource: 'bom' },
     ],
   },
-  {
-    label: 'Inward',
-    path: '/inward',
-    iconKey: 'inwardIcon',
-    resource: 'inward',
-  },
+
   {
     label: 'Purchase',
     iconKey: 'purchaseIcon',
@@ -90,12 +99,26 @@ export const erpNavigation: MenuItem[] = [
       { label: 'Purchases Outword', path: '/purchase/outward', resource: 'purchase_outward' },
     ],
   },
+
+
   {
-    label: 'OutWard',
-    path: '/outward',
-    iconKey: 'outwardIcon',
-    resource: 'outward',
+    label: 'Accounting',
+    iconKey: 'accountingIcon',
+    resource: 'accounting',
+    children: [
+      { label: 'Customer Payment Received Entry', path: '/accounting/customer-payment-received', resource: 'customer_payment' },
+      { label: 'Customer Entry', path: '/accounting/customer-entry', resource: 'customer_entry' },
+      { label: 'Supplier Ledger', path: '/accounting/supplier-ledger', resource: 'supplier_ledger' },
+      { label: 'Account', path: '/accounting/account', resource: 'account_master' },
+      { label: 'Deposite Voucher', path: '/accounting/deposit-voucher', resource: 'deposit_voucher' },
+      { label: 'Withdraw Voucher', path: '/accounting/withdraw-voucher', resource: 'withdraw_voucher' },
+      { label: 'Expences Details', path: '/accounting/expenses-details', resource: 'expenses' },
+      { label: 'Customer Quotation', path: '/accounting/customer-quotation', resource: 'quotation' },
+      { label: 'Customer Ledger Record', path: '/accounting/customer-ledger-record', resource: 'customer_ledger_record' },
+      { label: 'Supplier Ledger Record', path: '/accounting/supplier-ledger-record', resource: 'supplier_ledger_record' },
+    ],
   },
+
   {
     label: 'Reports',
     iconKey: 'reportsIcon',
@@ -115,6 +138,7 @@ export const erpNavigation: MenuItem[] = [
       { label: 'Outstanding payment report', path: '/reports/outstanding-payment', resource: 'outstanding_payment_report' },
     ],
   },
+
   {
     label: 'Setting',
     iconKey: 'settingsIcon',
@@ -125,24 +149,7 @@ export const erpNavigation: MenuItem[] = [
       { label: 'Barcode Print', path: '/setting/barcode-print', resource: 'barcode_print' },
       { label: 'Company Details', path: '/setting/company-details', resource: 'company_details' },
     ],
-  },
-  {
-    label: 'Accounting',
-    iconKey: 'accountingIcon',
-    resource: 'accounting',
-    children: [
-      { label: 'Customer Payment Received Entry', path: '/accounting/customer-payment-received', resource: 'customer_payment' },
-      { label: 'Customer Entry', path: '/accounting/customer-entry', resource: 'customer_entry' },
-      { label: 'Supplier Ledger', path: '/accounting/supplier-ledger', resource: 'supplier_ledger' },
-      { label: 'Account', path: '/accounting/account', resource: 'account_master' },
-      { label: 'Deposite Voucher', path: '/accounting/deposit-voucher', resource: 'deposit_voucher' },
-      { label: 'Withdraw Voucher', path: '/accounting/withdraw-voucher', resource: 'withdraw_voucher' },
-      { label: 'Expences Details', path: '/accounting/expenses-details', resource: 'expenses' },
-      { label: 'Customer Quotation', path: '/accounting/customer-quotation', resource: 'quotation' },
-      { label: 'Customer Ledger Record', path: '/accounting/customer-ledger-record', resource: 'customer_ledger_record' },
-      { label: 'Supplier Ledger Record', path: '/accounting/supplier-ledger-record', resource: 'supplier_ledger_record' },
-    ],
-  },
+  }
 ];
 
 export const DashboardSideDrawer: React.FC<DashboardSideDrawerProps> = ({
@@ -162,30 +169,68 @@ export const DashboardSideDrawer: React.FC<DashboardSideDrawerProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   // Auto-expand parent section matching current route
+  // useEffect(() => {
+  //   const currentPath = location.pathname;
+  //   erpNavigation.forEach((item) => {
+  //     if (item.children) {
+  //       const hasActiveChild = item.children.some(
+  //         (child) => child.path === currentPath || (child.path && currentPath.startsWith(child.path))
+  //       );
+  //       if (hasActiveChild) {
+  //         setOpenSubmenus((prev) => ({ ...prev, [item.label]: true }));
+  //       }
+  //     }
+  //   });
+  // }, [location.pathname]);
+
+  // Auto-expand only the parent section matching the current route.
+  // Close all other submenus when navigating to another section.
   useEffect(() => {
     const currentPath = location.pathname;
-    erpNavigation.forEach((item) => {
-      if (item.children) {
-        const hasActiveChild = item.children.some(
-          (child) => child.path === currentPath || (child.path && currentPath.startsWith(child.path))
-        );
-        if (hasActiveChild) {
-          setOpenSubmenus((prev) => ({ ...prev, [item.label]: true }));
-        }
+
+    const activeParent = erpNavigation.find((item) => {
+      if (!item.children) return false;
+
+      return item.children.some(
+        (child) =>
+          child.path === currentPath ||
+          (child.path && currentPath.startsWith(child.path + '/'))
+      );
+    });
+
+    setOpenSubmenus(() => {
+      if (activeParent) {
+        return {
+          [activeParent.label]: true,
+        };
       }
+
+      // No child is active (e.g. Dashboard, Inward, OutWard)
+      // so close all submenus.
+      return {};
     });
   }, [location.pathname]);
 
   const toggleSubmenu = (label: string) => {
-    setOpenSubmenus((prev) => ({
-      ...prev,
-      [label]: !prev[label],
-    }));
+    setOpenSubmenus((prev) => {
+      const isCurrentlyOpen = Boolean(prev[label]);
+      // Close all other submenus, toggle the clicked one (accordion behavior)
+      const newState: Record<string, boolean> = {};
+      Object.keys(prev).forEach((key) => {
+        newState[key] = false;
+      });
+      newState[label] = !isCurrentlyOpen;
+      return newState;
+    });
   };
 
   const checkIsActive = (path?: string) => {
     if (!path) return false;
-    return location.pathname === path || (path !== '/master/dashboard' && path !== '/dashboard' && location.pathname.startsWith(path));
+    if (location.pathname === path) return true;
+    // Prevent prefix collision: only match if followed by '/' or end of string
+    if (path === '/master/dashboard' || path === '/dashboard') return false;
+    const normalizedPath = path.endsWith('/') ? path : path + '/';
+    return location.pathname.startsWith(normalizedPath);
   };
 
   const handleLogout = () => {
@@ -398,8 +443,8 @@ export const DashboardSideDrawer: React.FC<DashboardSideDrawerProps> = ({
                                   fontSize: '0.65rem',
                                   fontWeight: 700,
                                   mr: 0.5,
-                                  bgcolor: isChildActive ? 'primary.main' : 'rgba(0,0,0,0.06)',
-                                  color: isChildActive ? '#ffffff' : 'text.secondary',
+                                  bgcolor: 'rgba(0, 0, 0, 0.03)',
+                                  color: 'text.secondary',
                                 }}
                               />
                             )}
